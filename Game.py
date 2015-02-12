@@ -12,21 +12,49 @@ pygame.display.set_caption("Switch It Up")
 
 x_Dragon = 0;
 y_Dragon = 0;
+
+
+#Animates images
+def AnimationImages(width, height, filename): #defining a function have to do it before
+    # images array will be filled with each frame of an animation
+    images = []
+    
+    fullImage = pygame.image.load(filename).convert_alpha()
+    fullWidth, fullHeight = fullImage.get_size()
+    
+    for i in xrange(int(fullWidth/width)):
+        images.append(fullImage.subsurface((i*width, 0, width ,height)))
+        
+    return images
+
+
 #The Implementation of Player class should follow
 class Player(pygame.sprite.Sprite):
     
-    def __init__(self, filename):
+    def __init__(self, color, width, height, filename):
         # call parent class constructor
         pygame.sprite.Sprite.__init__(self)
         
         # load the image, converting the pixel format for optimization
-        self.image = pygame.image.load(filename).convert()
+        self.all_images = AnimationImages(width,height,filename)
         
-        # set the rectangle defined for this image for collision detection
-        self.rect = self.image.get_rect()
+        # delay is time between animation frames
+        # last_update saves the time the animation was last updated     
+        self.delay = 100
+        self.last_update = 0
+        
+         # frame is the array location in images
+        self.frame = 0
+        self.location = location
+        
+        # sets the animations current image
+        self.image = self.all_images[self.frame]
+        self.image.set_colorkey(color) 
+        self.rect = self.image.get_rect()       
+
         # position the image
         #self.Reset(self)
-        
+       
         self.rect.x_Dragon = 350
         self.rect.y_Dragon = 250
         
@@ -62,9 +90,34 @@ class Player(pygame.sprite.Sprite):
         global x_Dragon
         x_Dragon = x_Dragon +2
         
-state = 0
-while state != 1:
+    def updateAnimation (self, totalTime):
+        
+        # checks if enough time has passed to change the image
+        if totalTime - self.last_update > self.delay:
+            self.frame += 1
+            
+            # checks if the new image is greater than the number of images
+            # starts image cycle over if true
+            if self.frame >= len(self.all_images): 
+                self.frame = 0
                 
+            # updates current animation image
+            self.image = self.all_images[self.frame]
+            
+            # changes the last update time
+            self.last_update = totalTime
+        
+        #draws animation changes to the screen
+        screen.blit(self.image, self)
+        
+#state = 0
+#while state != 1:
+    
+    #Just a white screen
+#    screen.fill([255,255,255])
+    
+    # create the dragon image
+#    dragon = Player((255,255,255), 128, 114"Dragons.png",(x,y))               
         
         
         
