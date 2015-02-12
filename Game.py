@@ -11,61 +11,49 @@ WHITE    = ( 255, 255, 255)
 screen = pygame.display.set_mode([700,500])
 pygame.display.set_caption("Switch It Up")
 
-#The Implementation of Player class should follow
-#class Player(pygame.sprite.Sprite):
 
-class Room(object):
-    wall_list = None
-    def __int__(self):
-        self.wall_list = pygame.sprite.Group()
         
 #The Implementation of Wall class should follow
 class Wall(pygame.sprite.Sprite):
-    def __init__(self, x, y, fileName):
+    def __init__(self, x, y, width, height, color):
         
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(fileName).convert()
-
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
         self.rect = self.image.get_rect()        
         self.rect.x = x
         self.rect.y = y
         
-class Room1(Room):
-    def __init__(self):
-        Room.__init__(self)
-        # arbitrary wall coords
-        walls = [[0, 0, "block.png"],
-                [0, 350,"block.png"],
-                [500, 0,"block.png"],
-                [500, 350,"block.png"],
-                [20, 0,"block.png"],
-                [20, 200,"block.png"],
-                [390, 350,"block.png"]
-                ]
+
+wall_list = pygame.sprite.Group()
+walls = [[0, 0, 20, 1, BLACK],
+        [0, 350, 20, 1, BLACK],
+        [500, 0, 20, 1, BLACK],
+        [500, 350, 20, 1, BLACK],
+        [20, 0, 20, 1, BLACK],
+        [20, 200, 20, 1, BLACK],
+        [390, 350, 20, 1, BLACK]
+        ]
         # add each part of wall to a list
-        for thing in walls:
-            #wall = Wall(thing[0], thing[1], thing[2], thing[3], thing[4])
-            self.wall_list.add(thing)
-    
-#def getCollision(player,walls): 
-    #if pygame.sprite.collide_rect(player,walls):
-        
-    
-    
+for thing in walls:
+    wall = Wall(thing[0], thing[1], thing[2], thing[3], thing[4])
+    wall_list.add(wall)
 
 #main
 clock = pygame.time.Clock()
 done = False
 while not done:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT():
-            done = True
     screen.fill(WHITE)
-    Room1.draw(screen) 
+
+    wall_list.draw(screen) 
     pygame.display.flip()
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            done = True
+
+    clock.tick(30)
     
-    
-    pygame.quit()
+pygame.quit()
     
     
     
